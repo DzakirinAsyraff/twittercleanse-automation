@@ -4,12 +4,24 @@ import time
 import os
 
 count = 0
-
-# Read credentials from file
-with open('credentials.txt', 'r') as file:
-    username, password = [line.strip() for line in file]
-    print(f'Username: {username}')
-    print(f'Password: {password}')
+try:
+    # Read credentials from file
+    with open('credentials.txt', 'r') as file:
+        username, password = [line.strip() for line in file]
+        print(f'Username: {username}')
+        print(f'Password: {password}')
+except FileNotFoundError:
+    print('Could not find credentials.txt file, creating one...')
+    with open('credentials.txt', 'w') as file:
+        username = input('Enter your username: ')
+        password = input('Enter your password: ')
+        file.write(username + '\n')
+        file.write(password)
+        print('Created credentials.txt file with your credentials')
+        exit()
+except ValueError:
+    print('credentials.txt file is not formatted correctly, please delete it and try again')
+    exit()
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False)
